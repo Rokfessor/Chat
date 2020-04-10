@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.Dialog?>
+<Dialog xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="controller.AuthorizationController"
+        fx:id="dialog">
+    <dialogPane>
+        <DialogPane fx:id="dialogPane" styleClass="vbox">
+            <ButtonType fx:constant="OK"/>
+            <ButtonType fx:constant="CANCEL"/>
+            <content>
+                <VBox styleClass="vbox">
+                    <TextField fx:id="userNameField" text="NAME">
+                        <promptText>User name</promptText>
+                    </TextField>
+                    <TextField fx:id="serverIpField" text="localhost">
+                        <promptText>Server ip</promptText>
+                    </TextField>
+                    <TextField fx:id="serverPortField" text="3344">
+                        <promptText>Server port</promptText>
+                    </TextField>
+                </VBox>
+            </content>
+        </DialogPane>
+    </dialogPane>
+
+</Dialog>

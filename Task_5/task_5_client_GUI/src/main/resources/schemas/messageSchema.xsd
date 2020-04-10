@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:CM="clientMessage"
+	targetNamespace="clientMessage">
+
+	<xs:element name="message" type="CM:Message"/>
+
+	<xs:complexType name="Message">
+	    <xs:sequence>		
+	    	<xs:element type="xs:string" name="body"/>	
+	    	<xs:element type="xs:string" name="name"/>
+	    	<xs:element type="xs:dateTime" name="time"/>	
+	    	<xs:element type="xs:string" name="userIP"/>
+	    	<xs:element type="xs:string" name="imageHex"/>
+	    </xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

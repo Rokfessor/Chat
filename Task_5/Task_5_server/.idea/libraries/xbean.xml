@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="xbean">
+    <CLASSES>
+      <root url="jar://C:/Program Files/xmlbeans-3.1.0/lib/xbean.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

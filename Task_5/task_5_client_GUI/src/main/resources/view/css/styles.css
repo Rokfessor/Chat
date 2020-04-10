@@ -1,0 +1,53 @@
+.button {
+    -fx-text-fill: #b3b3b3;
+    -fx-background-color: #262626;
+}
+
+.label {
+	-fx-text-fill: #b3b3b3;
+    -fx-border-radius: 20;
+}
+
+.vbox {
+    -fx-spacing: 8;
+    -fx-background-color: #1a1a1a;
+}
+
+.text-field {
+	-fx-background-color: #404040;
+	-fx-text-fill: #b3b3b3;
+}
+
+.hbox {
+	-fx-background-color: #1a1a1a;
+}
+
+.messageVBox {
+    -fx-background-color: #404040;
+    -fx-padding: 5;
+    -fx-spacing: 5;
+    -fx-background-radius: 5;
+}
+
+.scroll-pane {
+   -fx-background-color: transparent;
+   -fx-background: transparent;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:thumb {
+	-fx-background-color:#404040;
+}
+
+.mainVBox {
+	-fx-background-color: #1a1a1a;
+	-fx-spacing: 15;
+}
+
+.text-area {
+	-fx-background-color: #1a1a1a;
+	-fx-control-inner-background: #404040;
+}

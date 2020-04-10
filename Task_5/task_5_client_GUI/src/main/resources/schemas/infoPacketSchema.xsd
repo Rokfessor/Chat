@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:IP="InfoPacket"
+	targetNamespace="InfoPacket">
+
+	<xs:element name="infoPacket" type="IP:InfoPacket"/>
+
+	<xs:complexType name="InfoPacket">
+		<xs:sequence>
+			<xs:element type="xs:string" name="checksum"/>
+			<xs:element type="xs:int" name="packetsCount"/>
+			<xs:element type="xs:int" name="dataByteSize"/>
+			<xs:element type="xs:int" name="lastPacketSize"/>
+			<xs:element type="xs:int" name="packetsSize"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

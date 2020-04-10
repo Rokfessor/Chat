@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.control.Label?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.MainController"
+      prefHeight="600.0" prefWidth="400.0"
+      alignment="CENTER" styleClass="mainVBox"
+      fx:id="mainVBox">
+    <padding>
+        <Insets top="10" bottom="10" right="10" left="10" />
+    </padding>
+
+    <Label fx:id="nameLabel"/>
+
+    <ScrollPane fx:id="scrollPane"  styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+        <ScrollBar styleClass="scroll-bar"/>
+        <VBox fx:id="messagesVBox" styleClass="vbox"/>
+    </ScrollPane>
+
+    <HBox spacing="20" alignment="CENTER" maxHeight="70" styleClass="hbox" VBox.vgrow="SOMETIMES">
+        <TextArea promptText="Enter message" fx:id="textArea" wrapText="true"  styleClass="text-area"/>
+        <VBox spacing="5" alignment="CENTER">
+            <Button text="Send" onMouseReleased="#sendMessage" minWidth="50"/>
+            <Button text="Add Image" onMouseReleased="#addImageToMessage" minWidth="50"/>
+        </VBox>
+    </HBox>
+</VBox>
