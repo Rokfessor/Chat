@@ -14,8 +14,8 @@ public class Alerts {
         ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(new Image("images/error.png"));
         alert.showAndWait();
     }
-    public static void showWarningAlert (String text){
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+    public static void showInfoAlert (String text){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);
         alert.setContentText(text);
         alert.showAndWait();

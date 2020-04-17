@@ -1,8 +1,11 @@
 package model;
 
+import Utils.Alerts;
 import Utils.DataHandler;
 import Utils.FilterData;
+
 import javafx.scene.image.ImageView;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -12,8 +15,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+
 import java.sql.*;
+
 import java.text.ParseException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +34,7 @@ public class DBHandler {
             Class.forName("oracle.jdbc.driver.OracleDriver");
         } catch (ClassNotFoundException e){
             throw  new ClassNotFoundException("Class not found: " + e.getMessage() + "\n (скорее всего он лежит в " +
-                    "папке resources\\jar)");
+                    " resources\\jar)");
         }
     }
 
@@ -57,11 +63,17 @@ public class DBHandler {
     }
 
     public void fillTable(Table table) throws SQLException {
+        if (table == null)
+            throw new NullPointerException("The table is not selected");
+
         PreparedStatement ps = connection.prepareStatement("select * from " + table.getName());
         fillTable(ps, table);
     }
 
-    public void fillTable(PreparedStatement preparedStatements, Table table) throws SQLException {
+    public void fillTable(PreparedStatement preparedStatements, Table table) throws SQLException, NullPointerException {
+        if (table == null)
+            throw new NullPointerException("The table is not selected");
+
         table.clearData();
         ResultSet result = preparedStatements.executeQuery();
 
@@ -103,13 +115,18 @@ public class DBHandler {
         Statement statement = connection.createStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM " + userName + ".tab");
         List<String> tables = new ArrayList<>();
+
         while (result.next()) {
             tables.add(result.getString(1));
         }
+
         return tables;
     }
 
-    public void addRow(Map<String, Object> row, Table table) throws SQLException {
+    public void addRow(Map<String, Object> row, Table table) throws SQLException, NullPointerException {
+        if (table == null)
+            throw new NullPointerException("The table is not selected");
+
         StringBuilder sb = new StringBuilder("INSERT INTO " + table.getName() + " (");
         List<String> tmpList = new ArrayList<>();
 
@@ -156,28 +173,32 @@ public class DBHandler {
         ps.executeUpdate();
     }
 
-    public void deleteRow(Map<String, Object> row, Table table) throws SQLException {
-        if (table != null) {
-            PreparedStatement statement = connection.prepareStatement("DELETE FROM " + table.getName() + " WHERE " +
-                    table.getPrimaryKey() + " = ?");
-            switch (table.getColumnType(table.getPrimaryKey())) {
-                case Types.NUMERIC:
-                    statement.setInt(1, (Integer) row.get(table.getPrimaryKey()));
-                    break;
-                case Types.VARCHAR:
-                    statement.setString(1, (String) row.get(table.getPrimaryKey()));
-                    break;
-                case Types.TIMESTAMP:
-                    statement.setTimestamp(1, (Timestamp) row.get(table.getPrimaryKey()));
-                    break;
-            }
-            statement.executeUpdate();
-            table.getData().remove(row);
-        } else throw new RuntimeException("The table is not selected");
+    public void deleteRow(Map<String, Object> row, Table table) throws SQLException, NullPointerException {
+        if (table == null)
+            throw new NullPointerException("The table is not selected");
+
+        PreparedStatement statement = connection.prepareStatement("DELETE FROM " + table.getName() + " WHERE " +
+                table.getPrimaryKey() + " = ?");
+        switch (table.getColumnType(table.getPrimaryKey())) {
+            case Types.NUMERIC:
+                statement.setInt(1, (Integer) row.get(table.getPrimaryKey()));
+                break;
+            case Types.VARCHAR:
+                statement.setString(1, (String) row.get(table.getPrimaryKey()));
+                break;
+            case Types.TIMESTAMP:
+                statement.setTimestamp(1, (Timestamp) row.get(table.getPrimaryKey()));
+                break;
+        }
+        statement.executeUpdate();
+        table.getData().remove(row);
     }
 
     public void fillTableByFilter(List<FilterData> filtersData, Table table) throws SQLException, ParseException,
-            NumberFormatException {
+            NumberFormatException, NullPointerException {
+        if (table == null)
+            throw new NullPointerException("The table is not selected");
+
         StringBuilder sb = new StringBuilder("SELECT ");
         for (FilterData filterData : filtersData) {
             if (filterData.getShow()) {
@@ -230,7 +251,10 @@ public class DBHandler {
         fillTable(ps, table);
     }
 
-    public void updateRow(Map<String, Object> newRow, int oldRowIndex, Table table) throws SQLException {
+    public void updateRow(Map<String, Object> newRow, int oldRowIndex, Table table) throws SQLException, NullPointerException {
+        if (table == null)
+            throw new NullPointerException("The table is not selected");
+
         StringBuilder sb = new StringBuilder("UPDATE " + table.getName() + " SET ");
         List<String> changedColumns = new ArrayList<>();
         boolean isChanged = false;
@@ -292,71 +316,75 @@ public class DBHandler {
     }
 
 
-    public void exportToCSV(File file, Table table) throws IOException, RuntimeException {
-        if (table != null) {
-            FileWriter fileWriter = new FileWriter(file, false);
-            StringBuilder sb = new StringBuilder();
+    public void exportToCSV(File file, Table table) throws IOException, NullPointerException {
+        if (table == null)
+            throw new NullPointerException("The table is not selected");
 
-            for (int i = 0; i < table.getData().size(); i++) {
-                Map<String, Object> data = table.getData().get(i);
-                for (int j = 0; j < table.getColumnCount(); j++) {
-                    if (data.get(table.getColumnName(j)) != null) {
-                        switch (table.getColumnType(j)) {
-                            case Types.NUMERIC:
-                            case Types.TIMESTAMP:
-                                sb.append(data.get(table.getColumnName(j))).append(";");
-                                break;
-                            case Types.VARCHAR:
-                                sb.append("\"").append(data.get(table.getColumnName(j))).append("\";");
-                                break;
-                        }
+        FileWriter fileWriter = new FileWriter(file, false);
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < table.getData().size(); i++) {
+            Map<String, Object> data = table.getData().get(i);
+            for (int j = 0; j < table.getColumnCount(); j++) {
+                if (data.get(table.getColumnName(j)) != null) {
+                    switch (table.getColumnType(j)) {
+                        case Types.NUMERIC:
+                        case Types.TIMESTAMP:
+                            sb.append(data.get(table.getColumnName(j))).append(";");
+                            break;
+                        case Types.VARCHAR:
+                            sb.append("\"").append(data.get(table.getColumnName(j))).append("\";");
+                            break;
                     }
                 }
-                sb.append("\n");
             }
-            fileWriter.write(sb.toString());
-            fileWriter.flush();
-        } else throw new RuntimeException("The table is not selected");
+            sb.append("\n");
+        }
+        fileWriter.write(sb.toString());
+        fileWriter.flush();
+        Alerts.showInfoAlert("Export to CSV was successful");
     }
 
-    public void exportToXLS(File file, Table table) throws IOException, RuntimeException {
-        if (table != null) {
-            XSSFWorkbook workBook = new XSSFWorkbook();
-            XSSFSheet workSheet = workBook.createSheet(table.getName());
-            Row namesRow = workSheet.createRow(0);
+    public void exportToXLS(File file, Table table) throws IOException, NullPointerException {
+        if (table == null)
+            throw new NullPointerException("The table is not selected");
 
-            for (int i = 0; i < table.getColumnCount(); i++) {
-                Cell cell = namesRow.createCell(i);
-                if (table.getColumnType(i) != Types.BLOB)
-                    cell.setCellValue(table.getColumnName(i));
-            }
+        XSSFWorkbook workBook = new XSSFWorkbook();
+        XSSFSheet workSheet = workBook.createSheet(table.getName());
+        Row namesRow = workSheet.createRow(0);
 
-            for (int i = 0; i < table.getData().size(); i++) {
-                Row row = workSheet.createRow(i + 1);
-                Map<String, Object> data = table.getData().get(i);
-                for (int j = 0; j < table.getColumnCount(); j++) {
-                    Cell cell = row.createCell(j);
-                    if (data.get(table.getColumnName(j)) != null) {
-                        switch (table.getColumnType(j)) {
-                            case Types.NUMERIC:
-                                cell.setCellValue((Integer) data.get(table.getColumnName(j)));
-                                break;
-                            case Types.VARCHAR:
-                                cell.setCellValue((String) data.get(table.getColumnName(j)));
-                                break;
-                            case Types.TIMESTAMP:
-                                cell.setCellValue(data.get(table.getColumnName(j)).toString());
-                                break;
-                        }
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            Cell cell = namesRow.createCell(i);
+            if (table.getColumnType(i) != Types.BLOB)
+                cell.setCellValue(table.getColumnName(i));
+        }
+
+        for (int i = 0; i < table.getData().size(); i++) {
+            Row row = workSheet.createRow(i + 1);
+            Map<String, Object> data = table.getData().get(i);
+            for (int j = 0; j < table.getColumnCount(); j++) {
+                Cell cell = row.createCell(j);
+                if (data.get(table.getColumnName(j)) != null) {
+                    switch (table.getColumnType(j)) {
+                        case Types.NUMERIC:
+                            cell.setCellValue((Integer) data.get(table.getColumnName(j)));
+                            break;
+                        case Types.VARCHAR:
+                            cell.setCellValue((String) data.get(table.getColumnName(j)));
+                            break;
+                        case Types.TIMESTAMP:
+                            cell.setCellValue(data.get(table.getColumnName(j)).toString());
+                            break;
                     }
                 }
             }
+        }
 
-            try (FileOutputStream outputStream = new FileOutputStream(file)) {
-                workBook.write(outputStream);
-            } catch (IOException e) {
-                throw new IOException(e.getMessage());
-            }
-        } else throw new RuntimeException("The table is not selected");
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            workBook.write(outputStream);
+            Alerts.showInfoAlert("Export to XLS was successful");
+        } catch (IOException e) {
+            throw new IOException(e.getMessage());
+        }
     }
 }
