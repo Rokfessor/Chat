@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Dialog?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.layout.VBox?>
+<Dialog xmlns:fx="http://javafx.com/fxml/1"
+        xmlns="http://javafx.com/javafx/10.0.2-internal"
+        fx:controller="controller.FilterController"
+        fx:id="dialog">
+    <dialogPane>
+        <DialogPane>
+            <content>
+                <VBox fx:id="vBox" spacing="10"/>
+            </content>
+            <ButtonType fx:constant="OK"/>
+        </DialogPane>
+    </dialogPane>
+</Dialog>
